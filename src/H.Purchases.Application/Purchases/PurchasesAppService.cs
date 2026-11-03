@@ -18,17 +18,20 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
     private readonly IRepository<PurchaseInvoice, Guid> _invoices;
     private readonly PurchaseInvoiceManager             _manager;
     private readonly IGuidGenerator                     _guids;
+    private readonly PurchasesGlPoster                  _glPoster;
 
     public PurchasesAppService(
         IRepository<Supplier, Guid>        suppliers,
         IRepository<PurchaseInvoice, Guid> invoices,
         PurchaseInvoiceManager             manager,
-        IGuidGenerator                     guids)
+        IGuidGenerator                     guids,
+        PurchasesGlPoster                  glPoster)
     {
         _suppliers = suppliers;
         _invoices  = invoices;
         _manager   = manager;
         _guids     = guids;
+        _glPoster  = glPoster;
     }
 
     // ── Bootstrap ─────────────────────────────────────────────────────────────
@@ -124,7 +127,11 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
         await _invoices.InsertAsync(invoice, autoSave: true);
 
         if (input.Post)
+        {
             await _manager.PostAsync(invoice, CurrentUser.Id);
+            // GL post — fire-and-forget on failure (non-blocking; logs warning on error).
+            await _glPoster.PostInvoiceJournalAsync(invoice, CurrentTenant.Id);
+        }
 
         return MapInvoice(invoice, suppliers);
     }
@@ -137,6 +144,9 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
             ?? throw new BusinessException(PurchasesErrorCodes.InvoiceNotFound);
 
         await _manager.PostAsync(invoice, CurrentUser.Id);
+
+        // GL post — fire-and-forget on failure (non-blocking; logs warning on error).
+        await _glPoster.PostInvoiceJournalAsync(invoice, CurrentTenant.Id);
 
         var suppliers = await _suppliers.GetListAsync();
         return MapInvoice(invoice, suppliers);
