@@ -1,5 +1,6 @@
 using H.Platform;
 using H.Purchases.Gl;
+using H.Purchases.Inventory;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Application;
 using Volo.Abp.AutoMapper;
@@ -17,7 +18,7 @@ namespace H.Purchases;
     typeof(AbpAutoMapperModule),
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpIdentityApplicationModule)
-)]
+    )]
 public class PurchasesApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -32,13 +33,21 @@ public class PurchasesApplicationModule : AbpModule
         // ── Purchases → GL options ────────────────────────────────────────────
         context.Services.Configure<PurchasesGlOptions>(configuration.GetSection(PurchasesGlOptions.SectionName));
 
+        // ── Purchases → Inventory options ─────────────────────────────────────
+        context.Services.Configure<PurchasesInventoryOptions>(configuration.GetSection(PurchasesInventoryOptions.SectionName));
+
         // ── Shared HttpClients ────────────────────────────────────────────────
         context.Services.AddHttpClient("H.Auth");
         context.Services.AddHttpClient("H.Accounting.GL");
+        context.Services.AddHttpClient("H.Inventory.Stock");
 
         // ── Purchases → GL services ───────────────────────────────────────────
         context.Services.AddSingleton<AccountingGlClient>();
         context.Services.AddScoped<PurchasesGlPoster>();
+
+        // ── Purchases → Inventory services ────────────────────────────────────
+        context.Services.AddSingleton<InventoryStockClient>();
+        context.Services.AddScoped<PurchasesStockPoster>();
 
         context.Services.AddMemoryCache();
     }

@@ -10,8 +10,8 @@ namespace H.Purchases.Invoices;
 /// Purchase invoice header.
 /// Workflow: Draft → Posted.
 /// When posted:
-///   - TODO: Call H.Inventory StockReceipt hook (SourceModule=Purchases, SourceKey=pi:{id})
-///   - TODO: Call H.Accounting GL post hook (SourceModule=Purchases, SourceKey=pi:{id})
+///   - PurchasesStockPoster: H.Inventory Receipt document (SourceKey=pi:{id}, best-effort)
+///   - PurchasesGlPoster:    H.Accounting GL journal    (SourceKey=pi:{id}, best-effort)
 /// </summary>
 public class PurchaseInvoice : HTrackedAggregateRoot<Guid>
 {
@@ -32,10 +32,10 @@ public class PurchaseInvoice : HTrackedAggregateRoot<Guid>
 
     public decimal GrandTotal { get; set; }
 
-    /// <summary>GL journal number, populated after Accounting integration (TODO).</summary>
+    /// <summary>GL journal number, populated after Accounting integration (PurchasesGlPoster).</summary>
     public string? JournalNumber { get; set; }
 
-    /// <summary>Stock document ID returned from Inventory integration (TODO).</summary>
+    /// <summary>Stock receipt document ID returned from Inventory integration (PurchasesStockPoster).</summary>
     public string? StockDocumentId { get; set; }
 
     public ICollection<PurchaseInvoiceLine> Lines { get; set; } = new List<PurchaseInvoiceLine>();
