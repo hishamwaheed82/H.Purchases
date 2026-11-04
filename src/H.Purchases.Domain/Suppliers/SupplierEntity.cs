@@ -14,6 +14,12 @@ public class Supplier : HTrackedAggregateRoot<Guid>
 
     public string Name { get; set; } = string.Empty;
 
+    /// <summary>Primary contact phone number (optional).</summary>
+    public string? Phone { get; set; }
+
+    /// <summary>Primary contact email address (optional).</summary>
+    public string? Email { get; set; }
+
     public bool IsActive { get; set; } = true;
 
     protected Supplier() { }

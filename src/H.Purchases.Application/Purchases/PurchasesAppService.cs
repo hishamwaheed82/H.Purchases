@@ -75,6 +75,8 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
             TenantId = CurrentTenant.Id,
             Code     = input.Code.Trim(),
             Name     = input.Name.Trim(),
+            Phone    = string.IsNullOrWhiteSpace(input.Phone) ? null : input.Phone.Trim(),
+            Email    = string.IsNullOrWhiteSpace(input.Email) ? null : input.Email.Trim(),
             IsActive = input.IsActive
         };
         supplier.EnsureValid();
@@ -90,6 +92,8 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
 
         supplier.Code     = input.Code.Trim();
         supplier.Name     = input.Name.Trim();
+        supplier.Phone    = string.IsNullOrWhiteSpace(input.Phone) ? null : input.Phone.Trim();
+        supplier.Email    = string.IsNullOrWhiteSpace(input.Email) ? null : input.Email.Trim();
         supplier.IsActive = input.IsActive;
         supplier.EnsureValid();
         await _suppliers.UpdateAsync(supplier, autoSave: true);
@@ -168,6 +172,19 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
         return MapInvoice(invoice, suppliers);
     }
 
+    public virtual async Task<PurchaseInvoiceDto> CancelInvoiceAsync(Guid id)
+    {
+        var query   = await _invoices.WithDetailsAsync(i => i.Lines);
+        var where   = query.Where(i => i.Id == id);
+        var invoice = await AsyncExecuter.FirstOrDefaultAsync(where)
+            ?? throw new BusinessException(PurchasesErrorCodes.InvoiceNotFound);
+
+        await _manager.CancelAsync(invoice);
+
+        var suppliers = await _suppliers.GetListAsync();
+        return MapInvoice(invoice, suppliers);
+    }
+
     // ── Mappers ───────────────────────────────────────────────────────────────
 
     private static SupplierDto MapSupplier(Supplier s) => new()
@@ -175,6 +192,8 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
         Id       = s.Id,
         Code     = s.Code,
         Name     = s.Name,
+        Phone    = s.Phone,
+        Email    = s.Email,
         IsActive = s.IsActive
     };
 

@@ -58,4 +58,8 @@ public class PurchasesV1Controller : PurchasesController
     [HttpPost("invoices/{id:guid}/post")]
     public Task<PurchaseInvoiceDto> PostInvoiceAsync(Guid id) =>
         _purchases.PostInvoiceAsync(id);
+
+    [HttpPost("invoices/{id:guid}/cancel")]
+    public Task<PurchaseInvoiceDto> CancelInvoiceAsync(Guid id) =>
+        _purchases.CancelInvoiceAsync(id);
 }

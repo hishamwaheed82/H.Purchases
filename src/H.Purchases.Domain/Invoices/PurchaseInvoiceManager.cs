@@ -60,4 +60,22 @@ public class PurchaseInvoiceManager : DomainService
 
         await _invoices.UpdateAsync(invoice);
     }
+
+    /// <summary>
+    /// Cancels a Draft invoice. Only drafts can be cancelled; posted invoices
+    /// require a reversal journal and are not cancelable here.
+    /// </summary>
+    public async Task CancelAsync(PurchaseInvoice invoice)
+    {
+        Check.NotNull(invoice, nameof(invoice));
+
+        if (invoice.Status == PurchaseInvoiceStatus.Cancelled)
+            throw new BusinessException(PurchasesErrorCodes.InvoiceAlreadyCancelled);
+
+        if (invoice.Status != PurchaseInvoiceStatus.Draft)
+            throw new BusinessException(PurchasesErrorCodes.InvoiceCannotCancel);
+
+        invoice.Status = PurchaseInvoiceStatus.Cancelled;
+        await _invoices.UpdateAsync(invoice);
+    }
 }

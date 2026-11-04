@@ -8,16 +8,20 @@ namespace H.Purchases.Purchases;
 
 public class SupplierDto
 {
-    public Guid   Id       { get; set; }
-    public string Code     { get; set; } = "";
-    public string Name     { get; set; } = "";
-    public bool   IsActive { get; set; }
+    public Guid    Id       { get; set; }
+    public string  Code     { get; set; } = "";
+    public string  Name     { get; set; } = "";
+    public string? Phone    { get; set; }
+    public string? Email    { get; set; }
+    public bool    IsActive { get; set; }
 }
 
 public class CreateUpdateSupplierDto
 {
-    [Required, MaxLength(32)]  public string Code     { get; set; } = "";
-    [Required, MaxLength(256)] public string Name     { get; set; } = "";
+    [Required, MaxLength(32)]  public string  Code     { get; set; } = "";
+    [Required, MaxLength(256)] public string  Name     { get; set; } = "";
+    [MaxLength(32)]            public string? Phone    { get; set; }
+    [MaxLength(256)]           public string? Email    { get; set; }
     public bool IsActive { get; set; } = true;
 }
 

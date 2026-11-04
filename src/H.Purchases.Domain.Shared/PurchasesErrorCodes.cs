@@ -10,4 +10,6 @@ public static class PurchasesErrorCodes
     public const string NoLines                 = "Purchases:40006";
     public const string InvalidQuantity         = "Purchases:40007";
     public const string InvalidUnitCost         = "Purchases:40008";
+    public const string InvoiceAlreadyCancelled = "Purchases:40009";
+    public const string InvoiceCannotCancel      = "Purchases:40010";
 }
