@@ -194,7 +194,8 @@ public class InventoryStockClient
 public class CreateStockDocumentRequest
 {
     /// <summary>"Receipt" for purchases, "Issue" for sales.</summary>
-    public string DocType { get; set; } = "Receipt";
+    /// <summary>StockDocumentType as int: Receipt=1, Issue=2, Transfer=3.</summary>
+    public int DocType { get; set; } = 1;
     public string Date    { get; set; } = string.Empty;
     public Guid WarehouseId { get; set; }
     public string? Reference { get; set; }

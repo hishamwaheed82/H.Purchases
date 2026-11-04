@@ -88,7 +88,7 @@ public class PurchasesStockPoster
 
         var request = new CreateStockDocumentRequest
         {
-            DocType     = "Receipt",
+            DocType     = 1, // Receipt
             Date        = invoice.DocDate.ToString("yyyy-MM-dd"),
             WarehouseId = invoice.WarehouseId.Value,
             Reference   = reference,
