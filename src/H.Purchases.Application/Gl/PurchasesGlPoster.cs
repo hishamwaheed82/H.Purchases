@@ -105,7 +105,9 @@ public class PurchasesGlPoster
 
         if (success)
         {
-            var effective = journalNumber ?? $"ACC-{sourceKey}";
+            var effective = !string.IsNullOrWhiteSpace(journalNumber)
+                ? journalNumber!
+                : $"ACC-{sourceKey}";
             try
             {
                 invoice.JournalNumber = effective;
@@ -118,7 +120,7 @@ public class PurchasesGlPoster
                     effective, invoice.Number);
             }
 
-            return alreadyExisted ? invoice.JournalNumber : journalNumber;
+            return invoice.JournalNumber ?? effective;
         }
 
         _logger.LogWarning("[Purchases→GL] GL post failed for invoice {Number}. Invoice is posted but no journal was created.", invoice.Number);
