@@ -9,6 +9,10 @@ using Volo.Abp.MultiTenancy;
 
 namespace H.Purchases.DataSeed;
 
+/// <summary>
+/// Idempotent demo seed for a fresh tenant: two suppliers with contact fields.
+/// Skips host; no-ops when any supplier already exists (never wipes production).
+/// </summary>
 public class DemoPurchasesDataSeedContributor : IDataSeedContributor, ITransientDependency
 {
     private readonly IRepository<Supplier, Guid> _suppliers;
@@ -32,15 +36,26 @@ public class DemoPurchasesDataSeedContributor : IDataSeedContributor, ITransient
         {
             if (await _suppliers.AnyAsync()) return;
 
-            var supplier = new Supplier(_guids.Create())
+            var samples = new[]
             {
-                TenantId = context.TenantId,
-                Code     = "SUP001",
-                Name     = "المورد الافتراضي",
-                IsActive = true
+                ("SUP001", "المورد الافتراضي", "01100000001", "supplier1@demo.local"),
+                ("SUP002", "شركة التوريد الحديث", "01100000002", "modern@demo.local")
             };
-            supplier.EnsureValid();
-            await _suppliers.InsertAsync(supplier);
+
+            foreach (var (code, name, phone, email) in samples)
+            {
+                var supplier = new Supplier(_guids.Create())
+                {
+                    TenantId = context.TenantId,
+                    Code     = code,
+                    Name     = name,
+                    Phone    = phone,
+                    Email    = email,
+                    IsActive = true
+                };
+                supplier.EnsureValid();
+                await _suppliers.InsertAsync(supplier);
+            }
         }
     }
 }
