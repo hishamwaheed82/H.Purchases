@@ -8,7 +8,7 @@ namespace H.Purchases.Invoices;
 
 /// <summary>
 /// Purchase invoice header.
-/// Workflow: Draft → Posted.
+/// Workflow: Draft → Posted, or Draft → Cancelled.
 /// When posted:
 ///   - PurchasesStockPoster: H.Inventory Receipt document (SourceKey=pi:{id}, best-effort)
 ///   - PurchasesGlPoster:    H.Accounting GL journal    (SourceKey=pi:{id}, best-effort)

@@ -23,21 +23,8 @@ public class PurchaseInvoiceManager : DomainService
     }
 
     /// <summary>
-    /// Marks the invoice Posted.
-    ///
-    /// Integration stubs (wire up once the APIs are ready):
-    ///
-    ///   TODO: Inventory — StockReceipt
-    ///         Call IInventoryIntegration.CreateStockReceiptAsync(
-    ///             sourceModule: "Purchases", sourceKey: $"pi:{invoice.Id}",
-    ///             warehouseId: invoice.WarehouseId, lines: ...)
-    ///         Store the returned StockDocumentId on invoice.StockDocumentId.
-    ///
-    ///   TODO: Accounting — GL post
-    ///         Call IAccountingIntegration.PostAsync(
-    ///             sourceModule: "Purchases", sourceKey: $"pi:{invoice.Id}",
-    ///             grandTotal: invoice.GrandTotal, supplierId: invoice.SupplierId, ...)
-    ///         Store the returned JournalNumber on invoice.JournalNumber.
+    /// Marks the invoice Posted (domain status only).
+    /// Inventory StockReceipt + GL (PurchasesGlPoster / SourceKey pi:{id}) run in the Application layer after this.
     /// </summary>
     public async Task PostAsync(PurchaseInvoice invoice, Guid? userId)
     {
