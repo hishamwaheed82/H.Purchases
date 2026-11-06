@@ -133,15 +133,12 @@ public class PurchasesHttpApiHostModule : AbpModule
         });
 
         ConfigureCors(context, configuration);
-
-        if (context.Services.GetHostingEnvironment().IsDevelopment())
+        // V1: surface SQL/config errors to API clients for live smoke diagnosis.
+        Configure<AbpExceptionHandlingOptions>(options =>
         {
-            Configure<AbpExceptionHandlingOptions>(options =>
-            {
-                options.SendExceptionsDetailsToClients = true;
-                options.SendStackTraceToClients = false;
-            });
-        }
+            options.SendExceptionsDetailsToClients = true;
+            options.SendStackTraceToClients = false;
+        });
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
