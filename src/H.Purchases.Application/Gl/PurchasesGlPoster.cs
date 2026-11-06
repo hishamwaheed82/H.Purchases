@@ -153,9 +153,18 @@ public class PurchasesGlPoster
             return lines;
 
         var grandTotal = invoice.GrandTotal;
+        var cc = (!hasStockLines && !string.IsNullOrWhiteSpace(opts.CostCenterCode))
+            ? opts.CostCenterCode.Trim()
+            : null;
 
-        lines.Add(new GlLineRequest { Acct = debitAcct,                    Debit  = grandTotal, Desc = hasStockLines ? "مخزون مشتريات" : "مصروف مشتريات / خدمات" });
-        lines.Add(new GlLineRequest { Acct = opts.AccountsPayableAccount,  Credit = grandTotal, Desc = "دائنون — موردون" });
+        lines.Add(new GlLineRequest
+        {
+            Acct = debitAcct,
+            Debit = grandTotal,
+            Desc = hasStockLines ? "مخزون مشتريات" : "مصروف مشتريات / خدمات",
+            Cc = cc
+        });
+        lines.Add(new GlLineRequest { Acct = opts.AccountsPayableAccount, Credit = grandTotal, Desc = "دائنون — موردون" });
 
         return lines;
     }

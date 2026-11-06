@@ -186,4 +186,5 @@ public class GlLineRequest
     public decimal Debit  { get; set; }
     public decimal Credit { get; set; }
     public string? Desc   { get; set; }
+    public string? Cc     { get; set; }
 }

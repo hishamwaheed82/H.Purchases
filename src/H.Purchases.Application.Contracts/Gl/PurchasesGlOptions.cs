@@ -59,4 +59,10 @@ public class PurchasesGlOptions
     /// Demo default: 2102 (Accounts Payable — Suppliers).
     /// </summary>
     public string AccountsPayableAccount { get; set; } = "2102";
+
+    /// <summary>
+    /// Cost center required by Accounting for expense lines (service purchases).
+    /// Demo default: CC-100.
+    /// </summary>
+    public string CostCenterCode { get; set; } = "CC-100";
 }
