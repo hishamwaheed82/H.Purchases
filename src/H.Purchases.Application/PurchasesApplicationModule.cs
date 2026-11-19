@@ -1,3 +1,4 @@
+using System;
 using H.Platform;
 using H.Purchases.Gl;
 using H.Purchases.Inventory;
@@ -39,7 +40,8 @@ public class PurchasesApplicationModule : AbpModule
         // ── Shared HttpClients ────────────────────────────────────────────────
         context.Services.AddHttpClient("H.Auth");
         context.Services.AddHttpClient("H.Accounting.GL");
-        context.Services.AddHttpClient("H.Inventory.Stock");
+        context.Services.AddHttpClient("H.Inventory.Stock")
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(5));
 
         // ── Purchases → GL services ───────────────────────────────────────────
         context.Services.AddSingleton<AccountingGlClient>();
