@@ -12,4 +12,5 @@ public static class PurchasesErrorCodes
     public const string InvalidUnitCost         = "Purchases:40008";
     public const string InvoiceAlreadyCancelled = "Purchases:40009";
     public const string InvoiceCannotCancel      = "Purchases:40010";
+    public const string CorruptName              = "Purchases:40011";
 }
