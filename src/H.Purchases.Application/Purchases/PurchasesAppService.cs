@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using H.Platform;
 using H.Purchases.Invoices;
 using H.Purchases.Suppliers;
 using Microsoft.AspNetCore.Authorization;
@@ -70,6 +71,8 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
         if (await _suppliers.AnyAsync(s => s.Code == input.Code))
             throw new BusinessException(PurchasesErrorCodes.DuplicateSupplierCode).WithData("Code", input.Code);
 
+        NameSanity.EnsureNotCorrupt(input.Name, nameof(input.Name), PurchasesErrorCodes.CorruptName);
+
         var supplier = new Supplier(_guids.Create())
         {
             TenantId = CurrentTenant.Id,
@@ -89,6 +92,8 @@ public class PurchasesAppService : H.Purchases.PurchasesAppService, IPurchasesAp
         var supplier = await _suppliers.GetAsync(id);
         if (await _suppliers.AnyAsync(s => s.Code == input.Code && s.Id != id))
             throw new BusinessException(PurchasesErrorCodes.DuplicateSupplierCode).WithData("Code", input.Code);
+
+        NameSanity.EnsureNotCorrupt(input.Name, nameof(input.Name), PurchasesErrorCodes.CorruptName, supplier.Name);
 
         supplier.Code     = input.Code.Trim();
         supplier.Name     = input.Name.Trim();
